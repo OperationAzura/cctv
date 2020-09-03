@@ -115,3 +115,6 @@ class ImageStream:
     def SetWidth(self, width):
         self.width = width
 
+    #__del__ destuctor to release resources
+    def __del__(self):
+        self.piCamera.Close()
