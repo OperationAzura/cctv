@@ -2,6 +2,8 @@ print('importing image stream class')
 from pynput import keyboard
 #import threading 
 import queue
+from picamera.array import PiRGBArray
+from picamera import PiCamera
 print('imports done')
 
 class ImageStream(object):
