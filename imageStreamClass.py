@@ -134,3 +134,10 @@ class ImageStream:
                 self.printToFile('logging is messed up')
         f.write(s)
         f.close()
+
+if __name__ == "__main__":
+    print('running from class file')
+    x = ImageStream()
+    print('ImageStream Object created')
+    x.StartCapture()
+    print('after StartCapture')
