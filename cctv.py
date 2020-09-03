@@ -3,6 +3,8 @@ import time
 import cv2
 print('-1')
 from imageStreamClass import ImageStream
+import sys
+sys.stdout = open('x.x', 'w')
 
 def main():
 	print('0')
