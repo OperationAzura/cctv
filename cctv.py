@@ -6,7 +6,7 @@ from imageStreamClass import ImageStream
 
 def main():
 	print('0')
-	imgStream = imageStreamClass.ImageStream()
+	imgStream = ImageStream()
 	print('1')
 	imgStream.StartCapture()
 	print('2')

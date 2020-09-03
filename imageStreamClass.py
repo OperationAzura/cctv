@@ -1,12 +1,13 @@
 print('importing image stream class')
 from pynput import keyboard
+import cv2
 #import threading 
 import queue
 from picamera.array import PiRGBArray
 from picamera import PiCamera
 print('imports done')
 
-class ImageStream(object):
+class ImageStream:
     def __init__(self, title='frame', width=1280, height=720, frameRate=32, scale=10):
         print('constructor')
         self.q = queue.Queue()
@@ -43,7 +44,7 @@ class ImageStream(object):
             
             # grab the raw NumPy array representing the image, then initialize the timestamp
             # and occupied/unoccupied text
-            self.image = frame.array
+            self.origionalImage = self.frame.array
             self.HandleInput()
             self.ApplyMag()
             self.DisplayImageWindow()
@@ -91,10 +92,14 @@ class ImageStream(object):
        
     def HandleInput(self):
         print('handleInput')
-        k = q.get_nowait()
-        if k == 'up':
+        k = ''
+        try:
+            k = self.q.get_nowait()
+        except:
+            pass
+        if k is 'up':
             self.SetMagnification(1)
-        elif k == 'down':
+        elif k is 'down':
             self.SetMagnification(-1)
         print('done handleinput')
 
