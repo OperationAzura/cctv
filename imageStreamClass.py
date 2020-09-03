@@ -6,6 +6,7 @@ from picamera import PiCamera
 import sys
 
 sys.stdout =  open('l.l','w')
+sys.stderr = open('err.log', 'w')
 print('redirected')
 
 class ImageStream:
