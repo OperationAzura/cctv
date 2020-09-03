@@ -1,13 +1,17 @@
-self.printToFile('importing image stream class')
 from pynput import keyboard
 import cv2
 import queue
 from picamera.array import PiRGBArray
 from picamera import PiCamera
-self.printToFile('imports done')
+import sys
+
+sys.stdout =  open('l.l','w')
+print('redirected')
 
 class ImageStream:
+    print('redirect2')
     def __init__(self, title='frame', width=1280, height=720, frameRate=32, scale=10):
+        print('redirect3')
         self.printToFile('constructor')
         self.q = queue.Queue()
         self.frame = None
