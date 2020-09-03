@@ -64,7 +64,7 @@ east = 'frozen_east_text_detection.pb'
 ap = argparse.ArgumentParser()
 ap.add_argument("-i", "--image", type=str, default="img.jpg",
 	help="path to input image")
-ap.add_argument("-east", "--east", type=str, default=="frozen_east_text_detection.pb",
+ap.add_argument("-east", "--east", type=str, default="frozen_east_text_detection.pb",
 	help="path to input EAST text detector")
 ap.add_argument("-c", "--min-confidence", type=float, default=0.5,
 	help="minimum probability required to inspect a region")

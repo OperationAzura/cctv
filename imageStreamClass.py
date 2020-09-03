@@ -47,7 +47,7 @@ class ImageStream(object):
     def SetMagnification(self, scaleChange):
         self.scale += scaleChange
         self.radiusX = int(self.scale * self.width / 100)
-        self.radiusY = int(self.scale * self.height/ 1 00)
+        self.radiusY = int(self.scale * self.height/ 100)
         self.minX = self.centerX - self.radiusX
         self.maxX = self.centerX + self.radiusX
         self.minY = self.centerY - self.radiusY

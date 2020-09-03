@@ -3,8 +3,14 @@ from picamera.array import PiRGBArray
 from picamera import PiCamera
 import time
 import cv2
-import imageStreamClass
+print('-1')
+from imageStreamClass import ImageStream
 
 def main():
+	print('0')
 	imgStream = imageStreamClass.ImageStream()
+	print('1')
 	imgStream.StartCapture()
+	print('2')
+	time.sleep(99999999999)
+	print('3')
