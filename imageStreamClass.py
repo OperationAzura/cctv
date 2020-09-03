@@ -10,7 +10,7 @@ class ImageStream(object):
         self.croppedImage = None
         self.image = None
         self.title = title
-        self.piCam = PiCamera()
+        self.piCamera = PiCamera()
         self.piCamera.resolution = (width, height)
         self.piCamera.framerate = frameRate
         self.scale = scale
@@ -54,7 +54,7 @@ class ImageStream(object):
         self.maxY = self.centerY + self.radiusY
         
     def ApplyMag(self):
-        self.croppedImage = self.image[self.minX : self.maxX, self.minY : self.maxY]
+        self.croppedImage = self.origionalImage[self.minX : self.maxX, self.minY : self.maxY]
         self.image = cv2.resize(self.croppedImage, (self.width, self.height)) 
 
     
