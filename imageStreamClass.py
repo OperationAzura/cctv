@@ -1,14 +1,14 @@
-printToFile('importing image stream class')
+self.printToFile('importing image stream class')
 from pynput import keyboard
 import cv2
 import queue
 from picamera.array import PiRGBArray
 from picamera import PiCamera
-printToFile('imports done')
+self.printToFile('imports done')
 
 class ImageStream:
     def __init__(self, title='frame', width=1280, height=720, frameRate=32, scale=10):
-        printToFile('constructor')
+        self.printToFile('constructor')
         self.q = queue.Queue()
         self.frame = None
         self.origionalImage = None
@@ -33,12 +33,12 @@ class ImageStream:
         self.frameRate = frameRate
         self.rawCapture = PiRGBArray(self.piCamera, size=(width, height))
         self.StartKeyListener()
-        printToFile('end constructor')
+        self.printToFile('end constructor')
 
 
     #StartCapture Starts aquiring image objects from the camera feed
     def StartCapture(self):
-        printToFile('startcapture')
+        self.printToFile('startcapture')
         for self.frame in self.piCamera.capture_continuous(self.rawCapture, format="bgr", use_video_port=True):
             
             # grab the raw NumPy array representing the image, then initialize the timestamp
@@ -50,10 +50,10 @@ class ImageStream:
             # show the frame
             #image = cv2.cv.rotate(image, cv2.ROTATE_180 )
             self.rawCapture.truncate(0)
-        printToFile('done captureing')
+        self.printToFile('done captureing')
 
     def SetMagnification(self, scaleChange):
-        printToFile('setMagnification')
+        self.printToFile('setMagnification')
         self.scale += scaleChange
         self.radiusX = int(self.scale * self.width / 100)
         self.radiusY = int(self.scale * self.height/ 100)
@@ -61,22 +61,22 @@ class ImageStream:
         self.maxX = self.centerX + self.radiusX
         self.minY = self.centerY - self.radiusY
         self.maxY = self.centerY + self.radiusY
-        printToFile('done setting magnification')
+        self.printToFile('done setting magnification')
         
     def ApplyMag(self):
-        printToFile('appyMag')
+        self.printToFile('appyMag')
         self.croppedImage = self.origionalImage[self.minX : self.maxX, self.minY : self.maxY]
         self.image = cv2.resize(self.croppedImage, (self.width, self.height)) 
-        printToFile('done apply mag')
+        self.printToFile('done apply mag')
     
     #DisplayImageWindow displays the image 
     def DisplayImageWindow(self):
-        printToFile('start displayImage')
+        self.printToFile('start displayImage')
         cv2.imshow(self.title, self.image)
-        printToFile('end displayImage')
+        self.printToFile('end displayImage')
 
     def StartKeyListener(self):
-        printToFile('startKeyListener')
+        self.printToFile('startKeyListener')
         def on_press(key):
             try:
                 k = key.char  # single-char keys
@@ -87,10 +87,10 @@ class ImageStream:
 
         listener = keyboard.Listener(on_press=on_press)
         listener.start()
-        printToFile('end keylistener')
+        self.printToFile('end keylistener')
        
     def HandleInput(self):
-        printToFile('handleInput')
+        self.printToFile('handleInput')
         k = ''
         try:
             k = self.q.get_nowait()
@@ -100,7 +100,7 @@ class ImageStream:
             self.SetMagnification(1)
         elif k is 'down':
             self.SetMagnification(-1)
-        printToFile('done handleinput')
+        self.printToFile('done handleinput')
 
     #SetTitle sets the title
     def SetTitle(self, title):
@@ -126,6 +126,6 @@ class ImageStream:
             try:
                 f = open('log.log', 'x')
             except:
-                printToFile('logging is messed up')
+                self.printToFile('logging is messed up')
         f.write(s)
         f.close()
