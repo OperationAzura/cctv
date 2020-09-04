@@ -88,6 +88,11 @@ class ImageStream(threading.Thread):
     
     #DisplayImageWindow displays the image 
     def DisplayImageWindow(self):
+        
+        cv2.namedWindow(self.title, cv2.WND_PROP_FULLSCREEN)
+        #cv2.moveWindow(window_name, screen.x - 1, screen.y - 1)
+        cv2.setWindowProperty(self.title, cv2.WND_PROP_FULLSCREEN, cv2.WINDOW_FULLSCREEN)
+        
         self.printToFile('start displayImage')
         cv2.imshow(self.title, self.image)
         k = cv2.waitKey(1)
@@ -149,9 +154,11 @@ class ImageStream(threading.Thread):
             try:
                 f = open('log.log', 'x')
             except:
-                self.printToFile('logging is messed up')
-        f.write(s)
-        f.close()
+                Print('logging is messed up')
+        if f != None:
+            f.write(s)
+            f.write('\n')
+            f.close()
 
 if __name__ == "__main__":
     print('running from class file')
