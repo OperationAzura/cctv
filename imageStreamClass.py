@@ -3,13 +3,14 @@ import cv2
 import queue
 from picamera.array import PiRGBArray
 from picamera import PiCamera
+import threading
 import sys
 
 sys.stdout =  open('l.l','w')
 sys.stderr = open('err.log', 'w')
 print('redirected')
 
-class ImageStream:
+class ImageStream(threading.Thread):
     print('redirect2')
     def __init__(self, title='frame', width=1280, height=720, frameRate=32, scale=10):
         print('redirect3')
@@ -42,7 +43,7 @@ class ImageStream:
 
 
     #StartCapture Starts aquiring image objects from the camera feed
-    def StartCapture(self):
+    def run(self):
         self.printToFile('startcapture')
         for self.frame in self.piCamera.capture_continuous(self.rawCapture, format="bgr", use_video_port=True):
             
