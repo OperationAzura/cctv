@@ -89,7 +89,7 @@ class ImageStream(threading.Thread):
     #DisplayImageWindow displays the image 
     def DisplayImageWindow(self):
         
-        cv2.namedWindow(self.title, cv2.WND_PROP_FULLSCREEN)
+        cv2.namedWindow(self.title, cv2.WINDOW_NORMAL)
         #cv2.moveWindow(window_name, screen.x - 1, screen.y - 1)
         cv2.setWindowProperty(self.title, cv2.WND_PROP_FULLSCREEN, cv2.WINDOW_FULLSCREEN)
         
