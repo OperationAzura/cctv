@@ -1,4 +1,5 @@
 from pynput import keyboard
+#import os
 import cv2
 import queue
 from picamera.array import PiRGBArray
@@ -6,13 +7,13 @@ from picamera import PiCamera
 import threading
 import sys
 
-sys.stdout =  open('l.l','w')
-sys.stderr = open('err.log', 'w')
-print('redirected')
+#sys.stdout =  open('l.l','w')
+#sys.stderr = open('err.log', 'w')
+#print('redirected')
 
 class ImageStream(threading.Thread):
-    print('redirect2')
-    def __init__(self, title='frame', width=1280, height=720, frameRate=32, scale=10):
+    def __init__(self, title='frame', width=1280, height=720, frameRate=32, scale=50):
+        threading.Thread.__init__(self)
         print('redirect3')
         self.printToFile('constructor')
         self.q = queue.Queue()
@@ -28,14 +29,22 @@ class ImageStream(threading.Thread):
         self.width = width
         self.height = height
         #set
+        print('width: ', width)
+        print('height: ', height)
         self.centerX = int(height / 2)
         self.centerY = int(height / 2)
         self.radiusX = int(scale*width/100)
+        print('radiusX: ', self.radiusX)
         self.radiusY = int(scale*height/100)
+        print('radiusY: ', self.radiusY)
         self.minX = self.centerX - self.radiusX
+        print("minX: ", self.minX)
         self.maxX = self.centerX + self.radiusX
+        print('maxX: ', self.maxX)
         self.minY = self.centerY - self.radiusY
+        print('miny: ', self.minY)
         self.maxY = self.centerY + self.radiusY
+        print('maxY: ',self.maxY)
         self.frameRate = frameRate
         self.rawCapture = PiRGBArray(self.piCamera, size=(width, height))
         self.StartKeyListener()
@@ -50,11 +59,13 @@ class ImageStream(threading.Thread):
             # grab the raw NumPy array representing the image, then initialize the timestamp
             # and occupied/unoccupied text
             self.origionalImage = self.frame.array
-            self.HandleInput()
-            self.ApplyMag()
-            self.DisplayImageWindow()
+            #self.HandleInput()
+            #self.ApplyMag()
+            self.image = self.origionalImage
+            #self.DisplayImageWindow()
             # show the frame
-            #image = cv2.cv.rotate(image, cv2.ROTATE_180 )
+            self.image = cv2.rotate(self.image, cv2.ROTATE_180 )
+            self.DisplayImageWindow()
             self.rawCapture.truncate(0)
         self.printToFile('done captureing')
 
@@ -79,6 +90,12 @@ class ImageStream(threading.Thread):
     def DisplayImageWindow(self):
         self.printToFile('start displayImage')
         cv2.imshow(self.title, self.image)
+        k = cv2.waitKey(1)
+        if k == 27:         # wait for ESC key to exit
+            print('esc key hit')
+            cv2.destroyAllWindows()
+            self.piCamera.close()
+            sys.exit(0)
         self.printToFile('end displayImage')
 
     def StartKeyListener(self):
@@ -122,7 +139,7 @@ class ImageStream(threading.Thread):
 
     #__del__ destuctor to release resources
     def __del__(self):
-        self.piCamera.Close()
+        self.piCamera.close()
 
     def printToFile(self, s):
         f = None
@@ -140,5 +157,6 @@ if __name__ == "__main__":
     print('running from class file')
     x = ImageStream()
     print('ImageStream Object created')
-    x.StartCapture()
+    x.start()
     print('after StartCapture')
+    x.join()
