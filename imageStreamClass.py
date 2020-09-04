@@ -161,8 +161,13 @@ class ImageStream(threading.Thread):
             f.close()
 
 if __name__ == "__main__":
+    import screeninfo
+
+    screen = screeninfo.get_monitors()[screen_id]
+    width, height = screen.width, screen.height
+
     print('running from class file')
-    x = ImageStream()
+    x = ImageStream(width=width, height=height)
     print('ImageStream Object created')
     x.start()
     print('after StartCapture')
