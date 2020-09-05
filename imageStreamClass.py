@@ -58,7 +58,7 @@ class ImageStream(threading.Thread):
             self.origionalImage = self.frame.array
             #self.HandleInput()
             self.ApplyMag()
-            self.image = self.origionalImage
+            #self.image = self.origionalImage
             #self.DisplayImageWindow()
             # show the frame
             self.image = cv2.rotate(self.image, cv2.ROTATE_180 )
@@ -69,6 +69,7 @@ class ImageStream(threading.Thread):
     def SetMagnification(self, scaleChange):
         self.printToFile('setMagnification')
         self.scale += scaleChange
+        print('scale: ', self.scale)
         self.radiusX = int(self.scale * self.width / 100)
         self.radiusY = int(self.scale * self.height/ 100)
         self.minX = self.centerX - self.radiusX
@@ -92,16 +93,20 @@ class ImageStream(threading.Thread):
         
         self.printToFile('start displayImage')
         cv2.imshow(self.title, self.image)
-        k = cv2.waitKey(1)
+        k = cv2.waitKey(0)
         if k == 27:         # wait for ESC key to exit
             print('esc key hit')
             cv2.destroyAllWindows()
             self.piCamera.close()
             sys.exit(0)
-        elif k == ord('up'):
+        elif k == 233 or k == 82 :
             self.SetMagnification( 5)
-        elif k == ord('down'):
+            print('up arrorw')
+        elif k == 84:
             self.SetMagnification( -5)
+            print('dow arrow')
+        elif k != -1:
+            print('k: ', k)
         self.printToFile('end displayImage')
 
     def StartKeyListener(self):
