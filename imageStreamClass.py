@@ -25,8 +25,8 @@ class ImageStream(threading.Thread):
         #set
         print('width: ', width)
         print('height: ', height)
-        self.centerX = int(height / 2)
-        self.centerY = int(width / 2)
+        self.centerX = int(width / 2)
+        self.centerY = int(height / 2)
         self.radiusX = int(scale*width/100)
         print('radiusX: ', self.radiusX)
         self.radiusY = int(scale*height/100)
@@ -41,7 +41,7 @@ class ImageStream(threading.Thread):
         print('maxY: ',self.maxY)
         self.frameRate = frameRate
         self.rawCapture = PiRGBArray(self.piCamera, size=(width, height))
-        self.StartKeyListener()
+        #self.StartKeyListener()
 
 
     #StartCapture Starts aquiring image objects from the camera feed
@@ -51,7 +51,7 @@ class ImageStream(threading.Thread):
             #self.HandleInput()
             self.ApplyMag()
             self.image = cv2.rotate(self.image, cv2.ROTATE_180 )
-            self.image = cv2.putText(self.image, 'Zoom: ' + str(self.scale),(10,500), cv2.FONT_HERSHEY_SIMPLEX, 1,(255,255,255),2)
+            self.image = cv2.putText(self.image, 'Zoom: ' + str(self.scale),(centerX,centerY), cv2.FONT_HERSHEY_SIMPLEX, 5,(2,255,2),5)
             self.DisplayImageWindow()
             self.rawCapture.truncate(0)
 
@@ -76,21 +76,18 @@ class ImageStream(threading.Thread):
         cv2.setWindowProperty(self.title, cv2.WND_PROP_FULLSCREEN, cv2.WINDOW_FULLSCREEN)
         
         cv2.imshow(self.title, self.image)
-        k = cv2.waitKey(0)
+        k = cv2.waitKey(50)
         if k == 27:         # wait for ESC key to exit
             print('esc key hit')
             cv2.destroyAllWindows()
             self.piCamera.close()
             sys.exit(0)
-        elif k == 233 or k == 82 :
+        elif k == 82 :
             self.SetMagnification( 5)
             print('up arrorw: ', k)
         elif k == 84:
             self.SetMagnification( -5)
             print('dow arrow: ', k)
-        elif k != -1:
-            print('k: ', k)
-        self.printToFile('end displayImage')
 
     def StartKeyListener(self):
         self.printToFile('startKeyListener')
