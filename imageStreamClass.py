@@ -12,7 +12,7 @@ import sys
 #print('redirected')
 
 class ImageStream(threading.Thread):
-    def __init__(self, title='frame', width=1280, height=720, frameRate=32, scale=50):
+    def __init__(self, title='frame', width=1280, height=720, frameRate=32, scale=100):
         threading.Thread.__init__(self)
         print('redirect3')
         self.printToFile('constructor')
@@ -55,12 +55,9 @@ class ImageStream(threading.Thread):
     def run(self):
         self.printToFile('startcapture')
         for self.frame in self.piCamera.capture_continuous(self.rawCapture, format="bgr", use_video_port=True):
-            
-            # grab the raw NumPy array representing the image, then initialize the timestamp
-            # and occupied/unoccupied text
             self.origionalImage = self.frame.array
             #self.HandleInput()
-            #self.ApplyMag()
+            self.ApplyMag()
             self.image = self.origionalImage
             #self.DisplayImageWindow()
             # show the frame
@@ -101,6 +98,10 @@ class ImageStream(threading.Thread):
             cv2.destroyAllWindows()
             self.piCamera.close()
             sys.exit(0)
+        elif k == ord('up'):
+            self.SetMagnification( 5)
+        elif k == ord('down'):
+            self.SetMagnification( -5)
         self.printToFile('end displayImage')
 
     def StartKeyListener(self):
@@ -163,7 +164,7 @@ class ImageStream(threading.Thread):
 if __name__ == "__main__":
     import screeninfo
 
-    screen = screeninfo.get_monitors()[screen_id]
+    screen = screeninfo.get_monitors()[0]
     width, height = screen.width, screen.height
 
     print('running from class file')
