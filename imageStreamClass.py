@@ -51,7 +51,7 @@ class ImageStream(threading.Thread):
             #self.HandleInput()
             self.ApplyMag()
             self.image = cv2.rotate(self.image, cv2.ROTATE_180 )
-            self.image = cv2.putText(self.image, 'Zoom: ' + str(self.scale),(self.centerX,self.centerY), cv2.FONT_HERSHEY_SIMPLEX, 4,(2,255,2),4)
+            self.image = cv2.putText(self.image, 'RX: ' + str(self.radiusX) + ' RY: ' + str(self.radiusY),(self.centerX,self.centerY), cv2.FONT_HERSHEY_SIMPLEX, 4,(2,255,2),4)
             self.DisplayImageWindow()
             self.rawCapture.truncate(0)
 
