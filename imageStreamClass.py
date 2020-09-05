@@ -51,7 +51,10 @@ class ImageStream(threading.Thread):
             #self.HandleInput()
             self.ApplyMag()
             self.image = cv2.rotate(self.image, cv2.ROTATE_180 )
-            self.image = cv2.putText(self.image, 'RX: ' + str(self.radiusX) + ' RY: ' + str(self.radiusY),(self.centerX,self.centerY), cv2.FONT_HERSHEY_SIMPLEX, 4,(2,255,2),4)
+            self.image = cv2.putText(self.image, 'width: ' + str(self.widthX) + ' height: ' + str(self.height),(self.centerX - 500,self.centerY - 500), cv2.FONT_HERSHEY_SIMPLEX, 2,(2,255,2),3)
+            self.image = cv2.putText(self.image, 'radiusX: ' + str(self.radiusX) + ' radiusY: ' + str(self.radiusY),(self.centerX - 500,self.centerY - 450), cv2.FONT_HERSHEY_SIMPLEX, 2,(2,255,2),3)
+            self.image = cv2.putText(self.image, 'minX: ' + str(self.minX) + ' minY: ' + str(self.minY),(self.centerX - 500,self.centerY - 400), cv2.FONT_HERSHEY_SIMPLEX, 2,(2,255,2),3)
+            self.image = cv2.putText(self.image, 'maxX: ' + str(self.maxX) + ' maxY: ' + str(self.maxY),(self.centerX - 500,self.centerY - 400), cv2.FONT_HERSHEY_SIMPLEX, 2,(2,255,2),3)
             self.DisplayImageWindow()
             self.rawCapture.truncate(0)
 
