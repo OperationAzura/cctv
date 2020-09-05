@@ -25,7 +25,7 @@ class ImageStream(threading.Thread):
         #set
         print('width: ', width)
         print('height: ', height)
-        self.centerX = int(height / 2)
+        self.centerX = int(width / 2)
         self.centerY = int(height / 2)
         self.radiusX = int(scale*width/100)
         print('radiusX: ', self.radiusX)
@@ -42,7 +42,6 @@ class ImageStream(threading.Thread):
         self.frameRate = frameRate
         self.rawCapture = PiRGBArray(self.piCamera, size=(width, height))
         self.StartKeyListener()
-        self.printToFile('end constructor')
 
 
     #StartCapture Starts aquiring image objects from the camera feed
