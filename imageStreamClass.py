@@ -49,7 +49,10 @@ class ImageStream(threading.Thread):
         for self.frame in self.piCamera.capture_continuous(self.rawCapture, format="bgr", use_video_port=True):
             self.origionalImage = self.frame.array
             #self.HandleInput()
-            self.ApplyMag()
+            try:
+                self.ApplyMag()
+            except:
+                print('fram error?')
             self.image = cv2.rotate(self.image, cv2.ROTATE_180 )
             self.image = cv2.putText(self.image, 'width: ' + str(self.widthX) + ' height: ' + str(self.height),(self.centerX - 500,self.centerY - 500), cv2.FONT_HERSHEY_SIMPLEX, 2,(2,255,2),3)
             self.image = cv2.putText(self.image, 'radiusX: ' + str(self.radiusX) + ' radiusY: ' + str(self.radiusY),(self.centerX - 500,self.centerY - 450), cv2.FONT_HERSHEY_SIMPLEX, 2,(2,255,2),3)
