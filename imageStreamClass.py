@@ -27,9 +27,9 @@ class ImageStream(threading.Thread):
         print('height: ', height)
         self.centerX = int(width / 2)
         self.centerY = int(height / 2)
-        self.radiusX = int(scale*width/100)
+        self.radiusX = int(scale*self.centerX/100)
         print('radiusX: ', self.radiusX)
-        self.radiusY = int(scale*height/100)
+        self.radiusY = int(scale*self.centerY/100)
         print('radiusY: ', self.radiusY)
         self.minX = self.centerX - self.radiusX
         print("minX: ", self.minX)
@@ -54,25 +54,25 @@ class ImageStream(threading.Thread):
             except:
                 print('fram error?')
             self.image = cv2.rotate(self.image, cv2.ROTATE_180 )
-            self.image = cv2.putText(self.image, 'width: ' + str(self.widthX) + ' height: ' + str(self.height),(self.centerX - 500,self.centerY - 500), cv2.FONT_HERSHEY_SIMPLEX, 2,(2,255,2),3)
+            self.image = cv2.putText(self.image, 'centerX: ' + str(self.centerX) + ' centerY: ' + str(self.centerY),(self.centerX - 500,self.centerY - 500), cv2.FONT_HERSHEY_SIMPLEX, 2,(2,255,2),3)
             self.image = cv2.putText(self.image, 'radiusX: ' + str(self.radiusX) + ' radiusY: ' + str(self.radiusY),(self.centerX - 500,self.centerY - 450), cv2.FONT_HERSHEY_SIMPLEX, 2,(2,255,2),3)
             self.image = cv2.putText(self.image, 'minX: ' + str(self.minX) + ' minY: ' + str(self.minY),(self.centerX - 500,self.centerY - 400), cv2.FONT_HERSHEY_SIMPLEX, 2,(2,255,2),3)
-            self.image = cv2.putText(self.image, 'maxX: ' + str(self.maxX) + ' maxY: ' + str(self.maxY),(self.centerX - 500,self.centerY - 400), cv2.FONT_HERSHEY_SIMPLEX, 2,(2,255,2),3)
+            self.image = cv2.putText(self.image, 'maxX: ' + str(self.maxX) + ' maxY: ' + str(self.maxY),(self.centerX - 500,self.centerY - 300), cv2.FONT_HERSHEY_SIMPLEX, 2,(2,255,2),3)
             self.DisplayImageWindow()
             self.rawCapture.truncate(0)
 
     def SetMagnification(self, scaleChange):
         self.scale += scaleChange
         print('scale: ', self.scale)
-        self.radiusX = int(self.scale * self.width / 100)
-        self.radiusY = int(self.scale * self.height/ 100)
+        self.radiusX = int(self.scale * self.centerX / 100)
+        self.radiusY = int(self.scale * self.centerY / 100)
         self.minX = self.centerX - self.radiusX
         self.maxX = self.centerX + self.radiusX
         self.minY = self.centerY - self.radiusY
         self.maxY = self.centerY + self.radiusY
         
     def ApplyMag(self):
-        self.croppedImage = self.origionalImage[self.minX : self.maxX, self.minY : self.maxY]
+        self.croppedImage = self.origionalImage[self.minY : self.maxY, self.minX : self.maxX]
         self.image = cv2.resize(self.croppedImage, (self.width, self.height)) 
     
     #DisplayImageWindow displays the image 
