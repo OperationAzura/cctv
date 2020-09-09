@@ -8,9 +8,11 @@ import threading
 import sys
 
 class ImageStream(threading.Thread):
-    def __init__(self, title='frame', width=1280, height=720, frameRate=32, scale=100):
+    def __init__(self, title, width, height, screenWidth, screenHeight, frameRate=32, scale=100):
         threading.Thread.__init__(self)
         self.q = queue.Queue()
+        self.screenWidth = screenWidth
+        self.screenHeight = screenHeight
         self.frame = None
         self.origionalImage = None
         self.croppedImage = None
@@ -73,7 +75,7 @@ class ImageStream(threading.Thread):
         
     def ApplyMag(self):
         self.croppedImage = self.origionalImage[self.minY : self.maxY, self.minX : self.maxX]
-        self.image = cv2.resize(self.croppedImage, (self.width, self.height)) 
+        self.image = cv2.resize(self.croppedImage, (self.screenWidth, self.screenHeight)) 
     
     #DisplayImageWindow displays the image 
     def DisplayImageWindow(self):
@@ -156,10 +158,12 @@ if __name__ == "__main__":
     import screeninfo
 
     screen = screeninfo.get_monitors()[0]
-    width, height = screen.width, screen.height
-
+    sWidth, sHeight = screen.width, screen.height
+    width = 640
+    height = 480
+    title = 'frame'
     print('running from class file')
-    x = ImageStream(width=width, height=height)
+    x = ImageStream(title=title, width=width, height=height, screenWidth=sWidth, screenHeight=sHeight)
     print('ImageStream Object created')
     x.start()
     print('after StartCapture')
