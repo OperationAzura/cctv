@@ -30,6 +30,7 @@ class ImageStream(multiprocessing.Process):
             except:
                 #set limited q size
                 #clear q if full
+                print('double pooping still')
                 pass
             self.rawCapture.truncate(0)
 
