@@ -72,8 +72,9 @@ if __name__ == "__main__":
     width = 640
     height = 480
     title = 'frame'
+    imgQ = multiprocessing.Queue
     print('running from class file')
-    x = ImageStream(title=title, width=width, height=height, screenWidth=sWidth, screenHeight=sHeight)
+    x = ImageStream(title=title, width=width, height=height, imgQ=imgQ)
     print('ImageStream Object created')
     x.start()
     print('after StartCapture')
