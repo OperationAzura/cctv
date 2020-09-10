@@ -60,7 +60,10 @@ class Display(multiprocessing.Process):
         #cv2.moveWindow(window_name, screen.x - 1, screen.y - 1)
         cv2.setWindowProperty(self.title, cv2.WND_PROP_FULLSCREEN, cv2.WINDOW_FULLSCREEN)
         
-        cv2.imshow(self.title, self.image)
+        try:
+            cv2.imshow(self.title, self.image)
+        except:
+            print('still pooping')
         k = cv2.waitKey(50)
         if k == 27:         # wait for ESC key to exit
             print('esc key hit')
