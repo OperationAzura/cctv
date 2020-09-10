@@ -1,5 +1,5 @@
 import cv2
-from imageStreamClass import ImageStreamClass
+from imageStreamClass import ImageStream
 import queue
 import multiprocessing
 import sys
@@ -31,8 +31,10 @@ class Display(multiprocessing.Process):
             #get image from queue
             try:
                 self.origionalImage = self.imgQ.get(False)
+                print('origIMGTYPE: ', type(self.origionalImage))
             except: # no new image
-                pass
+                print('origionalImage = .getfals')
+                os.exit(1)
             try:
                 self.ApplyMag()
             except:

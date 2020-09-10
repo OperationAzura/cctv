@@ -1,4 +1,3 @@
-from pynput import keyboard
 #import os
 import cv2
 import queue
@@ -24,9 +23,13 @@ class ImageStream(multiprocessing.Process):
 
     #StartCapture Starts aquiring image objects from the camera feed
     def run(self):
+        print('runnning in run even?')
         for self.frame in self.piCamera.capture_continuous(self.rawCapture, format="bgr", use_video_port=True):
+            print('wtf')
             try:
-                self.imgQ.put(self.frame.array,False)
+                print('at least this right?')
+                self.imgQ.put(self.frame.array, False)
+                print('put false: ', self.frame)
             except:
                 #set limited q size
                 #clear q if full
@@ -77,5 +80,5 @@ if __name__ == "__main__":
     x = ImageStream(title=title, width=width, height=height, imgQ=imgQ)
     print('ImageStream Object created')
     x.start()
-    print('after StartCapture')
+    print('after Start')
     x.join()
