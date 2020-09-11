@@ -1,3 +1,4 @@
+import time
 import cv2
 from imageStreamClass import ImageStream
 import queue
@@ -31,14 +32,20 @@ class Display(multiprocessing.Process):
             #get image from queue
             try:
                 self.origionalImage = self.imgQ.get(False)
-                print('origIMGTYPE: ', type(self.origionalImage))
+                #print('xxxxxxxxLen: ',len(self.origionalImage))
+                #print('origIMGTYPE: ', type(self.origionalImage))
             except: # no new image
-                print('origionalImage = .getfals')
-                os.exit(1)
+                print('xxxorigionalImage = .getfals')
+                #os.exit(1)
             try:
                 self.ApplyMag()
-            except:
-                print('fram error?')
+            except Exception as e:
+                print('err: ', str(e))
+                self.image = self.origionalImage
+                print('BUTTfram error?')
+            print('len: ', len(self.origionalImage))
+            print('len: ', len(self.image))
+            #self.image = self.origionalImage
             self.image = cv2.rotate(self.image, cv2.ROTATE_180 )
             self.DisplayImageWindow()
 
@@ -54,7 +61,7 @@ class Display(multiprocessing.Process):
         
     def ApplyMag(self):
         self.croppedImage = self.origionalImage[self.minY : self.maxY, self.minX : self.maxX]
-        self.image = cv2.resize(self.croppedImage, (self.screenWidth, self.screenHeight)) 
+        self.image = cv2.resize(self.croppedImage, (self.width, self.height)) 
     
     #DisplayImageWindow displays the image 
     def DisplayImageWindow(self):
@@ -64,13 +71,15 @@ class Display(multiprocessing.Process):
         
         try:
             cv2.imshow(self.title, self.image)
-        except:
+        except Exception as e:
+            print('ex!!!!!! ',str(e))
             print('still pooping')
+            os.exit()
         k = cv2.waitKey(50)
         if k == 27:         # wait for ESC key to exit
             print('esc key hit')
             cv2.destroyAllWindows()
-            self.piCamera.close()
+            #self.piCamera.close()
             sys.exit(0)
         elif k == 82 :
             self.SetMagnification( 5)
@@ -103,12 +112,14 @@ if __name__ == "__main__":
     width = 640
     height = 480
     title = 'frame'
-    imgQ = multiprocessing.Queue
+    imgQ = multiprocessing.Queue()
     print('running from display class file')
     x = ImageStream(title=title, width=width, height=height, imgQ=imgQ)
     y = Display(title, sWidth, sHeight, imgQ)
     print('ImageStream Object created')
     x.start()
+    time.sleep(1)
+    print('pause before starting display')
     y.start()
     print('after StartCapture')
     x.join()
