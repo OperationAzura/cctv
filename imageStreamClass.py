@@ -1,4 +1,5 @@
-#import os
+import time
+import os
 import cv2
 import queue
 from picamera.array import PiRGBArray
@@ -7,7 +8,7 @@ import multiprocessing
 import sys
 
 class ImageStream(multiprocessing.Process):
-    def __init__(self, title, width, height, imgQ, frameRate=32, scale=100):
+    def __init__(self, title, width, height, imgQ, frameRate=10):
         multiprocessing.Process.__init__(self)
         self.imgQ = imgQ
         self.frame = None
@@ -24,8 +25,13 @@ class ImageStream(multiprocessing.Process):
     #StartCapture Starts aquiring image objects from the camera feed
     def run(self):
         print('runnning in run even?')
+        #print('wtf! ', self.piCamera.capture_continuous(self.rawCapture, format="bgr", use_video_port=True))
+        #self.__del__()
+        print('trying sleep')
+        time.sleep(3)
+        #print(type((self.piCamera.capture_continuous(self.rawCapture, format="bgr", use_video_port=True))))
         for self.frame in self.piCamera.capture_continuous(self.rawCapture, format="bgr", use_video_port=True):
-            print('wtf')
+            self.PrintToFile('wtf')
             try:
                 print('at least this right?')
                 self.imgQ.put(self.frame.array, False)
@@ -35,6 +41,7 @@ class ImageStream(multiprocessing.Process):
                 #clear q if full
                 print('double pooping still')
                 pass
+            print('end of try: ')
             self.rawCapture.truncate(0)
 
     #SetTitle sets the title
@@ -82,3 +89,4 @@ if __name__ == "__main__":
     x.start()
     print('after Start')
     x.join()
+    print('after join')
