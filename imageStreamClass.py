@@ -13,9 +13,9 @@ class ImageStream(multiprocessing.Process):
         self.imgQ = imgQ
         self.frame = None
         self.title = title
-        self.piCamera = PiCamera()
-        self.piCamera.resolution = (width, height)
-        self.piCamera.framerate = frameRate
+        self.piCamera = None # PiCamera()
+        #self.piCamera.resolution = (width, height)
+        #self.piCamera.framerate = frameRate
         self.width = width
         self.height = height
         self.frameRate = frameRate
@@ -24,24 +24,29 @@ class ImageStream(multiprocessing.Process):
 
     #StartCapture Starts aquiring image objects from the camera feed
     def run(self):
+        self.piCamera = PiCamera()
+        self.piCamera.resolution = (self.width, self.height)
+        self.piCamera.framerate = self.frameRate
         print('runnning in run even?')
         #print('wtf! ', self.piCamera.capture_continuous(self.rawCapture, format="bgr", use_video_port=True))
         #self.__del__()
         print('trying sleep')
-        time.sleep(3)
+        time.sleep(0.1)
         #print(type((self.piCamera.capture_continuous(self.rawCapture, format="bgr", use_video_port=True))))
         for self.frame in self.piCamera.capture_continuous(self.rawCapture, format="bgr", use_video_port=True):
-            self.PrintToFile('wtf')
+            #self.PrintToFile('wtf')
             try:
-                print('at least this right?')
-                self.imgQ.put(self.frame.array, False)
-                print('put false: ', self.frame)
-            except:
+                #print('at least this right?')
+                self.imgQ.put(self.frame.array)
+                #print('put worktin')
+            except Exception as e:
+                print('exception: ', str(e))
                 #set limited q size
                 #clear q if full
-                print('double pooping still')
-                pass
-            print('end of try: ')
+                #print('double pooping still')
+                #self.piCamera.close()
+                #os.exit(0)
+            #print('end of try: ')
             self.rawCapture.truncate(0)
 
     #SetTitle sets the title
@@ -60,7 +65,7 @@ class ImageStream(multiprocessing.Process):
     def __del__(self):
         self.piCamera.close()
 
-    def printToFile(self, s):
+    def PrintToFile(self, s):
         f = None
         try:
             f = open('log.log', 'a')
@@ -82,11 +87,17 @@ if __name__ == "__main__":
     width = 640
     height = 480
     title = 'frame'
-    imgQ = multiprocessing.Queue
+    imgQ = multiprocessing.Queue()
     print('running from class file')
     x = ImageStream(title=title, width=width, height=height, imgQ=imgQ)
     print('ImageStream Object created')
     x.start()
     print('after Start')
+    r = imgQ.get()
+    count = 0
+    while True:
+        r = imgQ.get()
+        print('r: ',count)
+        count = count +1
     x.join()
     print('after join')
