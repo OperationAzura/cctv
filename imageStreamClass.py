@@ -1,128 +1,53 @@
-from pynput import keyboard
-#import os
+import time
+import os
 import cv2
 import queue
 from picamera.array import PiRGBArray
 from picamera import PiCamera
-import threading
+import multiprocessing
 import sys
 
-class ImageStream(threading.Thread):
-    def __init__(self, title, width, height, screenWidth, screenHeight, frameRate=32, scale=100):
-        threading.Thread.__init__(self)
-        self.q = queue.Queue()
-        self.screenWidth = screenWidth
-        self.screenHeight = screenHeight
+class ImageStream(multiprocessing.Process):
+    def __init__(self, title, width, height, imgQ, frameRate=10):
+        multiprocessing.Process.__init__(self)
+        self.imgQ = imgQ
         self.frame = None
-        self.origionalImage = None
-        self.croppedImage = None
-        self.image = None
         self.title = title
-        self.piCamera = PiCamera()
-        self.piCamera.resolution = (width, height)
-        self.piCamera.framerate = frameRate
-        self.scale = scale
+        self.piCamera = None # PiCamera()
+        #self.piCamera.resolution = (width, height)
+        #self.piCamera.framerate = frameRate
         self.width = width
         self.height = height
-        #set
-        print('width: ', width)
-        print('height: ', height)
-        self.centerX = int(width / 2)
-        self.centerY = int(height / 2)
-        self.radiusX = int(scale*self.centerX/100)
-        print('radiusX: ', self.radiusX)
-        self.radiusY = int(scale*self.centerY/100)
-        print('radiusY: ', self.radiusY)
-        self.minX = self.centerX - self.radiusX
-        print("minX: ", self.minX)
-        self.maxX = self.centerX + self.radiusX
-        print('maxX: ', self.maxX)
-        self.minY = self.centerY - self.radiusY
-        print('miny: ', self.minY)
-        self.maxY = self.centerY + self.radiusY
-        print('maxY: ',self.maxY)
         self.frameRate = frameRate
         self.rawCapture = PiRGBArray(self.piCamera, size=(width, height))
-        #self.StartKeyListener()
 
 
     #StartCapture Starts aquiring image objects from the camera feed
     def run(self):
+        self.piCamera = PiCamera()
+        self.piCamera.resolution = (self.width, self.height)
+        self.piCamera.framerate = self.frameRate
+        print('runnning in run even?')
+        #print('wtf! ', self.piCamera.capture_continuous(self.rawCapture, format="bgr", use_video_port=True))
+        #self.__del__()
+        print('trying sleep')
+        time.sleep(0.1)
+        #print(type((self.piCamera.capture_continuous(self.rawCapture, format="bgr", use_video_port=True))))
         for self.frame in self.piCamera.capture_continuous(self.rawCapture, format="bgr", use_video_port=True):
-            self.origionalImage = self.frame.array
-            #self.HandleInput()
+            #self.PrintToFile('wtf')
             try:
-                self.ApplyMag()
-            except:
-                print('fram error?')
-            self.image = cv2.rotate(self.image, cv2.ROTATE_180 )
-            self.image = cv2.putText(self.image, 'centerX: ' + str(self.centerX) + ' centerY: ' + str(self.centerY),(self.centerX - 500,self.centerY - 500), cv2.FONT_HERSHEY_SIMPLEX, 2,(2,255,2),3)
-            self.image = cv2.putText(self.image, 'radiusX: ' + str(self.radiusX) + ' radiusY: ' + str(self.radiusY),(self.centerX - 500,self.centerY - 450), cv2.FONT_HERSHEY_SIMPLEX, 2,(2,255,2),3)
-            self.image = cv2.putText(self.image, 'minX: ' + str(self.minX) + ' minY: ' + str(self.minY),(self.centerX - 500,self.centerY - 400), cv2.FONT_HERSHEY_SIMPLEX, 2,(2,255,2),3)
-            self.image = cv2.putText(self.image, 'maxX: ' + str(self.maxX) + ' maxY: ' + str(self.maxY),(self.centerX - 500,self.centerY - 300), cv2.FONT_HERSHEY_SIMPLEX, 2,(2,255,2),3)
-            self.DisplayImageWindow()
+                #print('at least this right?')
+                self.imgQ.put(self.frame.array)
+                #print('put worktin')
+            except Exception as e:
+                print('exception: ', str(e))
+                #set limited q size
+                #clear q if full
+                #print('double pooping still')
+                #self.piCamera.close()
+                #os.exit(0)
+            #print('end of try: ')
             self.rawCapture.truncate(0)
-
-    def SetMagnification(self, scaleChange):
-        self.scale += scaleChange
-        print('scale: ', self.scale)
-        self.radiusX = int(self.scale * self.centerX / 100)
-        self.radiusY = int(self.scale * self.centerY / 100)
-        self.minX = self.centerX - self.radiusX
-        self.maxX = self.centerX + self.radiusX
-        self.minY = self.centerY - self.radiusY
-        self.maxY = self.centerY + self.radiusY
-        
-    def ApplyMag(self):
-        self.croppedImage = self.origionalImage[self.minY : self.maxY, self.minX : self.maxX]
-        self.image = cv2.resize(self.croppedImage, (self.screenWidth, self.screenHeight)) 
-    
-    #DisplayImageWindow displays the image 
-    def DisplayImageWindow(self):
-        cv2.namedWindow(self.title, cv2.WINDOW_NORMAL)
-        #cv2.moveWindow(window_name, screen.x - 1, screen.y - 1)
-        cv2.setWindowProperty(self.title, cv2.WND_PROP_FULLSCREEN, cv2.WINDOW_FULLSCREEN)
-        
-        cv2.imshow(self.title, self.image)
-        k = cv2.waitKey(50)
-        if k == 27:         # wait for ESC key to exit
-            print('esc key hit')
-            cv2.destroyAllWindows()
-            self.piCamera.close()
-            sys.exit(0)
-        elif k == 82 :
-            self.SetMagnification( 5)
-            print('up arrorw: ', k)
-        elif k == 84:
-            self.SetMagnification( -5)
-            print('dow arrow: ', k)
-
-    def StartKeyListener(self):
-        self.printToFile('startKeyListener')
-        def on_press(key):
-            try:
-                k = key.char  # single-char keys
-            except:
-                k = key.name  # other keys
-            if k in ['up', 'down']:  # keys of interest
-                self.q.put_nowait(k)
-
-        listener = keyboard.Listener(on_press=on_press)
-        listener.start()
-        self.printToFile('end keylistener')
-       
-    def HandleInput(self):
-        self.printToFile('handleInput')
-        k = ''
-        try:
-            k = self.q.get_nowait()
-        except:
-            pass
-        if k is 'up':
-            self.SetMagnification(1)
-        elif k is 'down':
-            self.SetMagnification(-1)
-        self.printToFile('done handleinput')
 
     #SetTitle sets the title
     def SetTitle(self, title):
@@ -140,7 +65,7 @@ class ImageStream(threading.Thread):
     def __del__(self):
         self.piCamera.close()
 
-    def printToFile(self, s):
+    def PrintToFile(self, s):
         f = None
         try:
             f = open('log.log', 'a')
@@ -162,9 +87,17 @@ if __name__ == "__main__":
     width = 640
     height = 480
     title = 'frame'
+    imgQ = multiprocessing.Queue()
     print('running from class file')
-    x = ImageStream(title=title, width=width, height=height, screenWidth=sWidth, screenHeight=sHeight)
+    x = ImageStream(title=title, width=width, height=height, imgQ=imgQ)
     print('ImageStream Object created')
     x.start()
-    print('after StartCapture')
+    print('after Start')
+    r = imgQ.get()
+    count = 0
+    while True:
+        r = imgQ.get()
+        print('r: ',count)
+        count = count +1
     x.join()
+    print('after join')
