@@ -7,10 +7,19 @@ from picamera import PiCamera
 import multiprocessing
 import sys
 
+
+
+
+###
+###make sure sends are all set!
+###
+
+
+
 class ImageStream(multiprocessing.Process):
-    def __init__(self, title, width, height, imgQ, frameRate=10):
+    def __init__(self, title, width, height, origImgSend, frameRate=10):
         multiprocessing.Process.__init__(self)
-        self.imgQ = imgQ
+        self.origImgSend = origImgSend
         self.frame = None
         self.title = title
         self.piCamera = None # PiCamera()
@@ -73,7 +82,7 @@ class ImageStream(multiprocessing.Process):
             try:
                 f = open('log.log', 'x')
             except:
-                Print('logging is messed up')
+                print('logging is messed up')
         if f != None:
             f.write(s)
             f.write('\n')

@@ -1,4 +1,5 @@
 import time
+import os
 import cv2
 from imageStreamClass import ImageStream
 import queue
@@ -6,63 +7,25 @@ import multiprocessing
 import sys
 
 class Display(multiprocessing.Process):
-    def __init__(self, title, width, height, imgQ,  scale=100):
+    def __init__(self, title, width, height, imgRecv):
         multiprocessing.Process.__init__(self)
         self.imgQ = imgQ
-        self.origionalImage = None
-        self.croppedImage = None
-        self.image = None
+        
         self.title = title
-        self.scale = scale
         self.width = width
         self.height = height
-        self.centerX = int(width / 2)
-        self.centerY = int(height / 2)
-        self.radiusX = int(scale*self.centerX/100)
-        self.radiusY = int(scale*self.centerY/100)
-        self.minX = self.centerX - self.radiusX
-        self.maxX = self.centerX + self.radiusX
-        self.minY = self.centerY - self.radiusY
-        self.maxY = self.centerY + self.radiusY
+        
 
     #run overides the threading run function and
     #displays the 
     def run(self):
         while True:
-            #get image from queue
-            try:
-                self.origionalImage = self.imgQ.get(False)
-                #print('xxxxxxxxLen: ',len(self.origionalImage))
-                #print('origIMGTYPE: ', type(self.origionalImage))
-            except: # no new image
-                print('xxxorigionalImage = .getfals')
-                #os.exit(1)
-            try:
-                self.ApplyMag()
-            except Exception as e:
-                print('err: ', str(e))
-                self.image = self.origionalImage
-                print('BUTTfram error?')
-            print('len: ', len(self.origionalImage))
-            print('len: ', len(self.image))
-            #self.image = self.origionalImage
-            self.image = cv2.rotate(self.image, cv2.ROTATE_180 )
+            #####
+            #####
+            #####get image!
+            #imgRecv.recv_bytes-into()
             self.DisplayImageWindow()
-
-    def SetMagnification(self, scaleChange):
-        self.scale += scaleChange
-        print('scale: ', self.scale)
-        self.radiusX = int(self.scale * self.centerX / 100)
-        self.radiusY = int(self.scale * self.centerY / 100)
-        self.minX = self.centerX - self.radiusX
-        self.maxX = self.centerX + self.radiusX
-        self.minY = self.centerY - self.radiusY
-        self.maxY = self.centerY + self.radiusY
-        
-    def ApplyMag(self):
-        self.croppedImage = self.origionalImage[self.minY : self.maxY, self.minX : self.maxX]
-        self.image = cv2.resize(self.croppedImage, (self.width, self.height)) 
-    
+            
     #DisplayImageWindow displays the image 
     def DisplayImageWindow(self):
         cv2.namedWindow(self.title, cv2.WINDOW_NORMAL)
