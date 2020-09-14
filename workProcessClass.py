@@ -16,7 +16,7 @@ class WorkProcess(multiprocessing.Process):
         self.image = None
         self.title = title
         self.scale = scale
-        self.screeWidth = screenWidth
+        self.screenWidth = screenWidth
         self.screenHeight = screenHeight
 
         self.centerX = int(width / 2)
@@ -43,7 +43,7 @@ class WorkProcess(multiprocessing.Process):
                 PrintToFile(str(e))
             else:
                 try:
-                    imgSend.send(self.Image)
+                    self.imgSend.send(self.image)
                 except Exception as e:
                     PrintToFile('Error in imgSend.send_bytes')
                     PrintToFile(str(e))
@@ -62,7 +62,7 @@ class WorkProcess(multiprocessing.Process):
         
     def ApplyMag(self):
         self.croppedImage = self.origionalImage[self.minY : self.maxY, self.minX : self.maxX]
-        self.image = cv2.resize(self.croppedImage, (self.screenWidthn, self.screenHeight))  
+        self.image = cv2.resize(self.croppedImage, (self.screenWidth, self.screenHeight))  
 
 if __name__ == "__main__":
     import screeninfo

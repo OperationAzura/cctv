@@ -22,7 +22,7 @@ class Display(multiprocessing.Process):
     def run(self):
         print('runing didsplay')
         while True:
-            self.image = self.imgRecv.recv_into()
+            self.image = self.imgRecv.recv()
             self.DisplayImageWindow()
             
     #DisplayImageWindow displays the image 
