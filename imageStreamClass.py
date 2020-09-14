@@ -70,19 +70,19 @@ class ImageStream(multiprocessing.Process):
     def SetWidth(self, width):
         self.width = width
 
-    def PrintToFile(self, s):
-        f = None
+def PrintToFile(self, s):
+    f = None
+    try:
+        f = open('log.log', 'a')
+    except:
         try:
-            f = open('log.log', 'a')
+            f = open('log.log', 'x')
         except:
-            try:
-                f = open('log.log', 'x')
-            except:
-                print('logging is messed up')
-        if f != None:
-            f.write(s)
-            f.write('\n')
-            f.close()
+            print('logging is messed up')
+    if f != None:
+        f.write(s)
+        f.write('\n')
+        f.close()
 
 if __name__ == "__main__":
     import screeninfo
