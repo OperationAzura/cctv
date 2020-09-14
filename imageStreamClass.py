@@ -36,19 +36,10 @@ class ImageStream(multiprocessing.Process):
         time.sleep(0.1)
         #print(type((self.piCamera.capture_continuous(self.rawCapture, format="bgr", use_video_port=True))))
         for self.frame in self.piCamera.capture_continuous(self.rawCapture, format="bgr", use_video_port=True):
-            #self.PrintToFile('wtf')
             try:
-                #print('at least this right?')
                 self.origImgSend.send(self.frame.array)
-                #print('put worktin')
             except Exception as e:
                 print('exception: ', str(e))
-                #set limited q size
-                #clear q if full
-                #print('double pooping still')
-                #self.piCamera.close()
-                #os.exit(0)
-            #print('end of try: ')
             self.rawCapture.truncate(0)
 
     #SetTitle sets the title
@@ -63,13 +54,13 @@ class ImageStream(multiprocessing.Process):
     def SetWidth(self, width):
         self.width = width
 
-def PrintToFile(self, s):
+def PrintToFile(self, s, name):
     f = None
     try:
-        f = open('log.log', 'a')
+        f = open(name + '.log', 'a')
     except:
         try:
-            f = open('log.log', 'x')
+            f = open(name + '.log', 'x')
         except:
             print('logging is messed up')
     if f != None:

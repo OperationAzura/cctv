@@ -6,9 +6,9 @@ import multiprocessing
 import sys
 
 class WorkProcess(multiprocessing.Process):
+    start = time.Now
     def __init__(self, title, width, height, screenWidth, screenHeight, origImgRecv, imgSend,  scale=100):
         multiprocessing.Process.__init__(self)
-        print('building workProcess class')
         self.origImgRecv = origImgRecv
         self.imgSend = imgSend
         self.origionalImage = []
@@ -29,30 +29,28 @@ class WorkProcess(multiprocessing.Process):
         self.maxY = self.centerY + self.radiusY
 
     def run(self):
-        print('running workProcess')
         while True:
+            start = time.clock
             try:
                 self.origionalImage = self.origImgRecv.recv()
             except Exception as e:
-                PrintToFile(str(e))
+                PrintToFile(str(e), 'wErr')
 
             try:
                 self.ApplyMag()
             except Exception as e:
-                PrintToFile('Error with ApplyMag in workProcess')
-                PrintToFile(str(e))
+                PrintToFile(str(e), 'wErr')
             else:
                 try:
                     self.imgSend.send(self.image)
                 except Exception as e:
-                    PrintToFile('Error in imgSend.send_bytes')
-                    PrintToFile(str(e))
+                    PrintToFile(str(e), 'wErr')
+            PrintToFile(str(start - time.clock()), 'wBench')
 
 
 
     def SetMagnification(self, scaleChange):
         self.scale += scaleChange
-        print('scale: ', self.scale)
         self.radiusX = int(self.scale * self.centerX / 100)
         self.radiusY = int(self.scale * self.centerY / 100)
         self.minX = self.centerX - self.radiusX
@@ -73,7 +71,7 @@ if __name__ == "__main__":
     sWidth, sHeight = screen.width, screen.height
     width = 640
     height = 480
-    frameRate = 10
+    frameRate = 20
     scale = 100
     
 
