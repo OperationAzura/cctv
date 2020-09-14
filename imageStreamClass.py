@@ -70,10 +70,6 @@ class ImageStream(multiprocessing.Process):
     def SetWidth(self, width):
         self.width = width
 
-    #__del__ destuctor to release resources
-    def __del__(self):
-        self.piCamera.close()
-
     def PrintToFile(self, s):
         f = None
         try:
