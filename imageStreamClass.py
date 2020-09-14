@@ -7,18 +7,10 @@ from picamera import PiCamera
 import multiprocessing
 import sys
 
-
-
-
-###
-###make sure sends are all set!
-###
-
-
-
 class ImageStream(multiprocessing.Process):
     def __init__(self, title, width, height, origImgSend, frameRate=10):
         multiprocessing.Process.__init__(self)
+        print('building imageStreamClass')
         self.origImgSend = origImgSend
         self.frame = None
         self.title = title
@@ -33,6 +25,7 @@ class ImageStream(multiprocessing.Process):
 
     #StartCapture Starts aquiring image objects from the camera feed
     def run(self):
+        print('running imageStream')
         self.piCamera = PiCamera()
         self.piCamera.resolution = (self.width, self.height)
         self.piCamera.framerate = self.frameRate

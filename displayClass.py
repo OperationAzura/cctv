@@ -8,6 +8,7 @@ import sys
 
 class Display(multiprocessing.Process):
     def __init__(self, title, width, height, imgRecv):
+        print('building displayClass')
         multiprocessing.Process.__init__(self)
         self.imgRecv = imgRecv
         self.image = None
@@ -19,8 +20,9 @@ class Display(multiprocessing.Process):
     #run overides the threading run function and
     #displays the 
     def run(self):
+        print('runing didsplay')
         while True:
-            imgRecv.recv_bytes_into(self.image)
+            self.imgRecv.recv_bytes_into(self.image)
             self.DisplayImageWindow()
             
     #DisplayImageWindow displays the image 

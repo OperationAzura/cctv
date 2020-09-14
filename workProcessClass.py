@@ -7,6 +7,7 @@ import sys
 class WorkProcess(multiprocessing.Process):
     def __init__(self, title, width, height, screenWidth, screenHeight, origImgRecv, imgSend,  scale=100):
         multiprocessing.Process.__init__(self)
+        print('building workProcess class')
         self.origImgRecv = origImgRecv
         self.imgSend = imgSend
         self.origionalImage = None
@@ -27,6 +28,7 @@ class WorkProcess(multiprocessing.Process):
         self.maxY = self.centerY + self.radiusY
 
     def run(self):
+        print('running workProcess')
         while True:
             try:
                 self.origImgRecv.recv_bytes_into(self.origionalImage)
