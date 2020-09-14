@@ -39,7 +39,7 @@ class ImageStream(multiprocessing.Process):
             #self.PrintToFile('wtf')
             try:
                 #print('at least this right?')
-                self.imgQ.put(self.frame.array)
+                self.origImgSend.send(self.frame.array)
                 #print('put worktin')
             except Exception as e:
                 print('exception: ', str(e))

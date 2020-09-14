@@ -32,7 +32,7 @@ class WorkProcess(multiprocessing.Process):
         print('running workProcess')
         while True:
             try:
-                self.origImgRecv.recv_bytes_into(self.origionalImage)
+                self.origionalImage = self.origImgRecv.recv()
             except Exception as e:
                 PrintToFile(str(e))
 
@@ -43,7 +43,7 @@ class WorkProcess(multiprocessing.Process):
                 PrintToFile(str(e))
             else:
                 try:
-                    imgSend.send_bytes(self.Image)
+                    imgSend.send(self.Image)
                 except Exception as e:
                     PrintToFile('Error in imgSend.send_bytes')
                     PrintToFile(str(e))
