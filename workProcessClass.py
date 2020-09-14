@@ -1,3 +1,4 @@
+import time
 import cv2
 from imageStreamClass import PrintToFile
 import queue
@@ -10,7 +11,7 @@ class WorkProcess(multiprocessing.Process):
         print('building workProcess class')
         self.origImgRecv = origImgRecv
         self.imgSend = imgSend
-        self.origionalImage = None
+        self.origionalImage = []
         self.croppedImage = None
         self.image = None
         self.title = title
@@ -85,3 +86,18 @@ if __name__ == "__main__":
     work = WorkProcess(title=title, width=width, height=height, screenWidth=sWidth, screenHeight=sHeight, origImgRecv=origImgRecv, imgSend=imgSend, scale=scale)
     display = Display(title=title, width=sWidth, height=sHeight, imgRecv=imgRecv)
 
+    work.start()
+    time.sleep(0.1)
+    print('work started')
+    imgStream.start()
+    time.sleep(0.1)
+    print('imgStream started')
+    display.start()
+    print('display started')
+
+    imgStream.join()
+    print('imgStream.join')
+    work.join()
+    print('work.join')
+    display.join()
+    print('display.join')
