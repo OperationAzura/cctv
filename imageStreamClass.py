@@ -31,7 +31,7 @@ class ImageStream(multiprocessing.Process):
             try:
                 self.origImgSend.send(self.frame.array)
                 PrintToFile(str(self.frame.array), 'frame')
-                PrintToFile('=================', 'fram')
+                PrintToFile('=================', 'frame')
             except Exception as e:
                 print('exception: ', str(e))
             self.rawCapture.truncate(0)
