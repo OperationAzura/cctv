@@ -6,7 +6,6 @@ import multiprocessing
 import sys
 
 class WorkProcess(multiprocessing.Process):
-    start = time.Now
     def __init__(self, title, width, height, screenWidth, screenHeight, origImgRecv, imgSend,  scale=100):
         multiprocessing.Process.__init__(self)
         self.origImgRecv = origImgRecv
@@ -30,24 +29,26 @@ class WorkProcess(multiprocessing.Process):
 
     def run(self):
         while True:
-            start = time.clock
+            #start = time.clock()
             try:
                 self.origionalImage = self.origImgRecv.recv()
             except Exception as e:
                 PrintToFile(str(e), 'wErr')
 
             try:
+                s = time.clock()
                 self.ApplyMag()
+                PrintToFile(str((time.clock() - s) * 1000)+' : ApplyMag', 'amBench')
             except Exception as e:
                 PrintToFile(str(e), 'wErr')
             else:
                 try:
+                    s = time.clock()
                     self.imgSend.send(self.image)
+                    PrintToFile(str((time.clock() - s) * 1000 ) + ' : imageSend', 'imgSendBench')
                 except Exception as e:
                     PrintToFile(str(e), 'wErr')
-            PrintToFile(str(start - time.clock()), 'wBench')
-
-
+            #PrintToFile(str((time.clock() - start) * 1000), 'wBench')
 
     def SetMagnification(self, scaleChange):
         self.scale += scaleChange
@@ -59,8 +60,12 @@ class WorkProcess(multiprocessing.Process):
         self.maxY = self.centerY + self.radiusY
         
     def ApplyMag(self):
+        s = time.clock()
         self.croppedImage = self.origionalImage[self.minY : self.maxY, self.minX : self.maxX]
+        PrintToFile(str((time.clock() - s) * 1000),'cropB')
+        s = time.clock()
         self.image = cv2.resize(self.croppedImage, (self.screenWidth, self.screenHeight))  
+        PrintToFile(str((time.clock() - s) * 1000), 'reB')
 
 if __name__ == "__main__":
     import screeninfo
@@ -69,7 +74,8 @@ if __name__ == "__main__":
 
     screen = screeninfo.get_monitors()[0]
     sWidth, sHeight = screen.width, screen.height
-    width = 640
+    print('w: '+str(sWidth)+' : h: ' +str(sHeight) )
+    width = 720
     height = 480
     frameRate = 20
     scale = 100

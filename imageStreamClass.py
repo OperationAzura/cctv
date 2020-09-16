@@ -54,7 +54,7 @@ class ImageStream(multiprocessing.Process):
     def SetWidth(self, width):
         self.width = width
 
-def PrintToFile(self, s, name):
+def PrintToFile( s, name):
     f = None
     try:
         f = open(name + '.log', 'a')
