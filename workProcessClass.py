@@ -60,11 +60,10 @@ class WorkProcess(multiprocessing.Process):
         self.maxY = self.centerY + self.radiusY
         
     def ApplyMag(self):
-        s = time.clock()
         self.croppedImage = self.origionalImage[self.minY : self.maxY, self.minX : self.maxX]
-        PrintToFile(str((time.clock() - s) * 1000),'cropB')
         s = time.clock()
-        self.image = cv2.resize(self.croppedImage, (self.screenWidth, self.screenHeight))  
+        self.image = cv2.resize(self.croppedImage[:(self.frame.array[:len(int(self.Frame.array)/2)])], (int(self.screenWidth/2), self.screenHeight))  
+        self.image += cv2.resize(self.croppedImage[(self.frame.array[len(int(self.Frame.array)/2)]):], (int(self.screenWidth/2), self.screenHeight))  
         PrintToFile(str((time.clock() - s) * 1000), 'reB')
 
 if __name__ == "__main__":
@@ -87,7 +86,7 @@ if __name__ == "__main__":
     origImgRecv2, origImgSend2 = multiprocessing.Pipe(False)
     imgRecv, imgSend = multiprocessing.Pipe(False)
 
-    imgStream = ImageStream(title=title, width=width, height=height, origImgSend=origImgSend, origImgSend2=origImgSend2, frameRate=frameRate)
+    imgStream = ImageStream(title=title, width=width, height=height, origImgSend=origImgSend, frameRate=frameRate)
     work = WorkProcess(title=title, width=width, height=height, screenWidth=sWidth, screenHeight=sHeight, origImgRecv=origImgRecv, imgSend=imgSend, scale=scale)
     display = Display(title=title, width=sWidth, height=sHeight, imgRecv=imgRecv)
 

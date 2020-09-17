@@ -8,7 +8,7 @@ import multiprocessing
 import sys
 
 class ImageStream(multiprocessing.Process):
-    def __init__(self, title, width, height, origImgSend, origImgSend2, frameRate=10):
+    def __init__(self, title, width, height, origImgSend, frameRate=10):
         multiprocessing.Process.__init__(self)
         print('building imageStreamClass')
         self.origImgSend = origImgSend
@@ -30,8 +30,7 @@ class ImageStream(multiprocessing.Process):
         for self.frame in self.piCamera.capture_continuous(self.rawCapture, format="bgr", use_video_port=True):
             try:
                 self.origImgSend.send(self.frame.array)
-                PrintToFile(str(self.frame.array), 'frame')
-                PrintToFile('=================', 'frame')
+                #self.origImgSend2.send(self.frame.array[len(int(self.Frame.array)/2):])
             except Exception as e:
                 print('exception: ', str(e))
             self.rawCapture.truncate(0)
